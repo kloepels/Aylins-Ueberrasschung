@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Spielcode Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #f0f0f0;
+            text-align: center;
+            padding-top: 10%;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="output">Lade...</h1>
+
+    <script>
+        const releaseDate = new Date("2025-07-17T00:00:00Z");
+
+        function updateDisplay() {
+            const now = new Date();
+            const output = document.getElementById("output");
+
+            if (now >= releaseDate) {
+                output.innerText = "Dein Spielcode: ABCD-1234-EFGH-5678";
+            } else {
+                const diff = releaseDate - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+                output.innerText = `Noch ${days}d ${hours}h ${minutes}m ${seconds}s bis zur Freischaltung...`;
+            }
+        }
+
+        setInterval(updateDisplay, 1000);
+        updateDisplay();
+    </script>
+</body>
+</html>
