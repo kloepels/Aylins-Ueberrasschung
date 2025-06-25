@@ -2,45 +2,76 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Aylin stinkert (machnchmal)</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spielcode Countdown</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #1a1a1a;
-            color: #f0f0f0;
-            text-align: center;
-            padding-top: 10%;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-        h1 {
-            font-size: 2.5em;
-        }
+        .hidden { display: none; }
+        .content { text-align: center; }
+        #image { margin-top: 20px; max-width: 90%; border-radius: 12px; }
     </style>
 </head>
 <body>
-    <h1 id="output">Lade...</h1>
+    <div id="password-screen" class="content">
+        <h2>Bitte Passwort eingeben</h2>
+        <input type="password" id="password" placeholder="Passwort" />
+        <button onclick="checkPassword()">Einloggen</button>
+        <p id="error-msg" style="color: red;"></p>
+    </div>
+
+    <div id="main-content" class="content hidden">
+        <h1>Countdown bis zur Enthüllung!</h1>
+        <p id="countdown"></p>
+        <div id="output" style="font-size: 1.5em; font-weight: bold;"></div>
+        <img id="image" src="assets/aylin-affe.jpg" alt="Aylin im Affenkostüm" />
+    </div>
 
     <script>
-        const releaseDate = new Date("2025-07-17T00:00:00Z");
+        const releaseDate = new Date("2025-07-17T00:00:00");
+        const passwordScreen = document.getElementById("password-screen");
+        const mainContent = document.getElementById("main-content");
+        const output = document.getElementById("output");
 
-        function updateDisplay() {
-            const now = new Date();
-            const output = document.getElementById("output");
-
-            if (now >= releaseDate) {
-                output.innerText = "Dein Spielcode: ABCD-1234-EFGH-5678";
+        function checkPassword() {
+            const input = document.getElementById("password").value;
+            if (input === "2906") {
+                passwordScreen.classList.add("hidden");
+                mainContent.classList.remove("hidden");
+                startCountdown();
             } else {
-                const diff = releaseDate - now;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const minutes = Math.floor((diff / (1000 * 60)) % 60);
-                const seconds = Math.floor((diff / 1000) % 60);
-                output.innerText = `Noch ${days}d ${hours}h ${minutes}m ${seconds}s bis zur Freischaltung...`;
+                document.getElementById("error-msg").textContent = "Falsches Passwort!";
             }
         }
 
-        setInterval(updateDisplay, 1000);
-        updateDisplay();
+        function startCountdown() {
+            const countdownEl = document.getElementById("countdown");
+            function updateCountdown() {
+                const now = new Date();
+                const diff = releaseDate - now;
+                if (diff <= 0) {
+                    countdownEl.textContent = "";
+                    output.innerText = "Dein Spielcode: ZXCV-9876-QWER-4321";
+                } else {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const minutes = Math.floor((diff / 1000 / 60) % 60);
+                    const seconds = Math.floor((diff / 1000) % 60);
+                    countdownEl.textContent = `${days} Tage, ${hours} Std, ${minutes} Min, ${seconds} Sek`;
+                    requestAnimationFrame(updateCountdown);
+                }
+            }
+            updateCountdown();
+        }
     </script>
 </body>
 </html>
